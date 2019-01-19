@@ -7,14 +7,28 @@ from PIL import Image
 from PIL import ImageTk
 import numpy as np
 
+from keras.models import model_from_json
+
+import matplotlib.pyplot as plt
+import os
+
 class GUI:
     path = None
     orig = None
     predicted = None
     tkRoot = None
     btn = None
+    model = None
     
     def __init__(self):
+        
+        # Model reconstruction from JSON file
+        with open('model.json', 'r') as f:
+            self.model = model_from_json(f.read())
+        
+        # Load weights into the new model
+        self.model.load_weights('model_weights.h5')
+        
         self.root = Tk()
         self.root.winfo_toplevel().title("U-Net data segmentation") 
         
@@ -40,19 +54,25 @@ class GUI:
         if not self.path:
             showerror(title='Error', message='Select a file')
             return
-
+        
         try:
-            img = (Image.open(self.path).resize((256,256)))
-            
-            origImg = ImageTk.PhotoImage(img)
-            predictedImg = ImageTk.PhotoImage(img)
-            
+            img = (Image.open(self.path))
+            origImg = ImageTk.PhotoImage(img.resize((256, 256)))
+            predict = np.expand_dims(np.asarray(img.resize((128, 128))), axis=0)
+            predicted = self.model.predict(predict)
+            predicted = np.argmax(predicted[0], axis=2)
+            plt.imsave('predicted.png', predicted)
+            predictedImg = ImageTk.PhotoImage(Image.open('predicted.png').resize((256, 256)))
+            os.remove('predicted.png')
+    
             self.panelA.configure(image=origImg)
             self.panelB.configure(image=predictedImg)
             self.panelA.image = origImg
             self.panelB.image = predictedImg
         except:
             showerror(title='Error', message='Invalid image')
+
+
 
             
 
