@@ -32,7 +32,7 @@ class GUI:
         self.root = Tk()
         self.root.winfo_toplevel().title("U-Net data segmentation") 
         
-        img = ImageTk.PhotoImage(Image.fromarray(np.zeros((256, 256, 3), dtype=np.uint8)))
+        img = ImageTk.PhotoImage(Image.fromarray(np.zeros((512, 512, 3), dtype=np.uint8)))
         
         self.panelA = Label(image=img)
         self.panelA.image = img
@@ -57,12 +57,12 @@ class GUI:
         
         try:
             img = (Image.open(self.path))
-            origImg = ImageTk.PhotoImage(img.resize((256, 256)))
+            origImg = ImageTk.PhotoImage(img.resize((512, 512)))
             predict = np.expand_dims(np.asarray(img.resize((128, 128))), axis=0)
             predicted = self.model.predict(predict)
             predicted = np.argmax(predicted[0], axis=2)
             plt.imsave('predicted.png', predicted)
-            predictedImg = ImageTk.PhotoImage(Image.open('predicted.png').resize((256, 256)))
+            predictedImg = ImageTk.PhotoImage(Image.open('predicted.png').resize((512, 512)))
             os.remove('predicted.png')
     
             self.panelA.configure(image=origImg)
