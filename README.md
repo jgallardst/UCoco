@@ -5,5 +5,10 @@ Se utiliza la red Unet para segmentacion junto con el datos del dataset COCO par
 
 Es necesario instalar keras + tensorflow, tkinter y PILLOW para hacer funcionar el programa.
 
+Ejemplo de funcionamiento:
+
+![Ejemplo](images/ejemplo.png)
+
+
 El modelo ha sido extraido de:
   - https://github.com/petrosgk/Kaggle-Carvana-Image-Masking-Challenge/
